@@ -21,7 +21,6 @@ RUN pip install uv
 COPY docker-requirements.txt requirements.txt
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r docker-requirements.txt
 RUN uv sync --frozen
 # Copy application code
 COPY . .
