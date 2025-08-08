@@ -1,23 +1,9 @@
-# Telegram Bot Dependencies (Generated from pyproject.toml)
 python-telegram-bot>=22.3
 python-dotenv>=1.1.1
-
-# Web Scraping
 requests>=2.32.4
 beautifulsoup4>=4.13.4
 lxml>=5.4.0
 trafilatura>=2.0.0
-
-# Web Service
 flask>=3.1.1
 gunicorn>=23.0.0
-
-# Async Support
 aiohttp>=3.12.15
-
-# Production deployment optimizations
-gunicorn>=23.0.0
-
-# Note: Avoid installing 'telegram==0.0.1' as it conflicts with python-telegram-bot
-# Use only python-telegram-bot for Telegram bot development
-# For Render.com: All dependencies are compatible with their Python environment
