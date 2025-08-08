@@ -18,8 +18,8 @@ RUN apt-get update && apt-get install -y \
 COPY docker-requirements.txt requirements.txt
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
+RUN pip install --no-cache-dir -r docker-requirements.txt
+RUN pip install uv
 # Copy application code
 COPY . .
 
