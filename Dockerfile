@@ -32,4 +32,4 @@ ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1 \
     PORT=${PORT:-10000}
 
-CMD ["python", "render_app.py"]
+CMD ["python", "main.py" "render_app.py"]
