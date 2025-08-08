@@ -1,0 +1,62 @@
+modules = ["python-3.11"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["xcodebuild", "zlib"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Telegram Bot Server"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "telegram_bot_test"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Status Web Service"
+
+[[workflows.workflow]]
+name = "Telegram Bot Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow]]
+name = "telegram_bot_test"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "uv add python-telegram-bot requests beautifulsoup4 lxml"
+
+[[workflows.workflow]]
+name = "Status Web Service"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python status_server.py"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80

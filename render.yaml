@@ -1,0 +1,26 @@
+# Render.com deployment configuration
+services:
+  - type: web
+    name: telegram-mobile-bot
+    env: python
+    buildCommand: "pip install -r requirements_export.txt"
+    startCommand: "python render_app.py"
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false  # Set this in Render dashboard
+      - key: REQUEST_DELAY
+        value: "2.0"
+      - key: MAX_REQUESTS_PER_MINUTE
+        value: "20"
+      - key: SCRAPING_TIMEOUT
+        value: "30"
+      - key: MAX_RESULTS_PER_PAGE
+        value: "5"
+      - key: MAX_TOTAL_RESULTS
+        value: "20"
+      - key: PYTHON_VERSION
+        value: "3.11.5"

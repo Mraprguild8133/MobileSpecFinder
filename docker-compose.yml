@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - REQUEST_DELAY=${REQUEST_DELAY:-2.0}
+      - MAX_REQUESTS_PER_MINUTE=${MAX_REQUESTS_PER_MINUTE:-20}
+      - SCRAPING_TIMEOUT=${SCRAPING_TIMEOUT:-30}
+      - MAX_RESULTS_PER_PAGE=${MAX_RESULTS_PER_PAGE:-5}
+      - MAX_TOTAL_RESULTS=${MAX_TOTAL_RESULTS:-20}
+      - PORT=5000
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - telegram-bot
+    restart: unless-stopped
+    profiles:
+      - production
