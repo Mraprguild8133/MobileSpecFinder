@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
-COPY pyproject.toml uv.lock* ./
+COPY requirements.txt uv.lock* ./
 
 # Install uv for faster package management
 RUN pip install uv
