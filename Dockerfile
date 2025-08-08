@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies and cleanup in one layer
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
@@ -13,36 +13,33 @@ RUN apt-get update && apt-get install -y \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt uv.lock* ./
+# Install uv (new package installer)
+RUN pip install --no-cache-dir uv
 
-# Install uv for faster package management
-RUN pip install uv
+# Copy requirements files
+COPY requirements.txt ./
 
-# Install Python dependencies
-RUN uv sync --frozen
+# Install Python dependencies using uv
+RUN uv pip install --no-cache -r requirements.txt
 
-# Copy application code
+# Copy application code (using .dockerignore to exclude unnecessary files)
 COPY . .
 
-# Create non-root user for security
-RUN useradd --create-home --shell /bin/bash app \
-    && chown -R app:app /app
+# Create and switch to non-root user
+RUN useradd -m app && chown -R app:app /app
 USER app
 
-# Expose port
-EXPOSE 5000
+# Expose port (with default for local development)
+EXPOSE ${PORT:-10000}
 
-# Health check for Render
+# Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:${PORT:-10000}/health || exit 1
 
-# Set environment variables
-ENV PYTHONPATH=/app
-ENV PYTHONUNBUFFERED=1
+# Environment variables
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    PORT=${PORT:-10000}
 
-# Commands for different platforms
-# Render.com
+# Command to run the application (adjust based on your needs)
 CMD ["python", "render_app.py"]
-# Alternative: Use gunicorn for production
-# CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "render_app:app"]
