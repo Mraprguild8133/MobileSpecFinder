@@ -14,12 +14,15 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
+# Install uv for faster package management
+RUN pip install uv
+
 # Copy requirements first for better caching
 COPY docker-requirements.txt requirements.txt
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r docker-requirements.txt
-RUN pip install uv
+RUN uv sync --frozen
 # Copy application code
 COPY . .
 
