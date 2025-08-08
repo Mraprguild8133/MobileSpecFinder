@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 COPY pyproject.toml uv.lock* ./
 
 # Install uv for faster package management
-RUN pip install uv
+RUN pip install -r requirements_export.txt
 
 # Install Python dependencies
 RUN uv sync --frozen
